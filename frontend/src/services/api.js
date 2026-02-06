@@ -9,6 +9,53 @@ const api = axios.create({
   },
 })
 
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('agrosim_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('agrosim_token')
+      localStorage.removeItem('agrosim_user')
+    }
+    return Promise.reject(error)
+  }
+)
+
+// Auth API
+export const authApi = {
+  register: (data) => api.post('/auth/register', data),
+  login: (username, password) => {
+    const formData = new URLSearchParams()
+    formData.append('username', username)
+    formData.append('password', password)
+    return api.post('/auth/login', formData, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+  },
+  getMe: () => api.get('/auth/me'),
+  updateMe: (data) => api.put('/auth/me', data),
+  checkUsername: (username) => api.get(`/auth/check-username/${username}`),
+  checkEmail: (email) => api.get(`/auth/check-email/${email}`),
+}
+
+// Leaderboard API
+export const leaderboardApi = {
+  submitScore: (data) => api.post('/leaderboard/submit', data),
+  getGlobal: (params = {}) => api.get('/leaderboard/global', { params }),
+  getRegional: (region, limit = 10) => api.get(`/leaderboard/regional/${region}`, { params: { limit } }),
+  getUserStats: (username) => api.get(`/leaderboard/user/${username}`),
+  getMyScores: (limit = 10) => api.get('/leaderboard/my-scores', { params: { limit } }),
+}
+
 // Game API
 export const gameApi = {
   createGame: (data) => api.post('/game/new', data),
