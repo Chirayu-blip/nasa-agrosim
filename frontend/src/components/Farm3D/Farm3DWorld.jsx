@@ -351,7 +351,7 @@ export default function Farm3DWorld({
           />
           
           {/* Farm decorations */}
-          <Farmer position={[2.5, 0, 1]} isWorking={selectedCrop !== null} />
+          <Farmer position={[-8, 0, -8]} isWorking={selectedCrop !== null} />
           
           <Barn position={[-6, 0, 3]} />
           <Windmill position={[7, 0, -5]} />

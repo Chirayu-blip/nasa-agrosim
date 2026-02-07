@@ -5,6 +5,16 @@ pydantic>=2.5.3
 python-dotenv>=1.0.0
 numpy
 pandas
+pyarrow>=14.0.0
 scikit-learn
 joblib
 python-multipart
+
+# Database
+sqlalchemy>=2.0.25
+aiosqlite>=0.19.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.1.2

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { 
   Sun, CloudRain, Droplets, Leaf, DollarSign, Calendar, 
   MapPin, Award, ArrowRight, Loader2, AlertCircle, 
-  Maximize2, Minimize2, Sprout, Scissors, Moon, Clock
+  Maximize2, Minimize2, Sprout, Scissors, Moon, Clock, AlertTriangle
 } from 'lucide-react'
 import clsx from 'clsx'
-import { gameApi, cropsApi, nasaApi } from '../services/api'
+import { gameApi, cropsApi, nasaApi, earlyWarningApi } from '../services/api'
 import { Farm3DWorld } from '../components/Farm3D'
 import WeatherPanel from '../components/WeatherPanel'
 import CropSelector from '../components/CropSelector'
@@ -39,6 +39,19 @@ function GamePage() {
   const { data: crops } = useQuery({
     queryKey: ['crops'],
     queryFn: cropsApi.getAllCrops,
+  })
+
+  // Fetch early warning alerts 
+  const { data: earlyWarnings } = useQuery({
+    queryKey: ['earlyWarnings', gameState?.data?.location?.latitude, gameState?.data?.location?.longitude],
+    queryFn: async () => {
+      const loc = gameState?.data?.location
+      if (!loc?.latitude || !loc?.longitude) return null
+      const res = await earlyWarningApi.getAlerts(loc.latitude, loc.longitude)
+      return res.data
+    },
+    enabled: !!gameState?.data?.location?.latitude,
+    staleTime: 5 * 60 * 1000, // Cache for 5 mins
   })
 
   // Sync weather from game state - using NASA POWER API data
@@ -385,6 +398,52 @@ function GamePage() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Early Warning Alerts Banner */}
+        {earlyWarnings?.alerts?.length > 0 && (
+          <div className="mb-4">
+            {earlyWarnings.alerts
+              .filter(a => a.severity === 'critical' || a.severity === 'high')
+              .slice(0, 2)
+              .map((alert, index) => (
+                <div 
+                  key={index}
+                  className={clsx(
+                    'flex items-center justify-between p-3 rounded-lg mb-2',
+                    alert.severity === 'critical' 
+                      ? 'bg-red-100 border-l-4 border-red-500 text-red-700'
+                      : 'bg-orange-100 border-l-4 border-orange-500 text-orange-700'
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <AlertTriangle className="h-5 w-5" />
+                    <div>
+                      <p className="font-semibold">{alert.title}</p>
+                      <p className="text-sm opacity-75">
+                        {alert.days_until === 0 ? 'Today' : 
+                         alert.days_until === 1 ? 'Tomorrow' : 
+                         `In ${alert.days_until} days`}
+                      </p>
+                    </div>
+                  </div>
+                  <Link 
+                    to="/early-warning" 
+                    className="text-sm font-medium underline hover:no-underline"
+                  >
+                    View Details →
+                  </Link>
+                </div>
+              ))}
+            {earlyWarnings.alerts.length > 2 && (
+              <Link 
+                to="/early-warning" 
+                className="text-sm text-gray-600 hover:text-gray-800"
+              >
+                +{earlyWarnings.alerts.length - 2} more alerts →
+              </Link>
+            )}
+          </div>
+        )}
+        
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Main 3D Farm Area */}
           <div className="lg:col-span-3 space-y-4">

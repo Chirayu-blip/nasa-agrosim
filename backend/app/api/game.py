@@ -6,11 +6,23 @@ Core game mechanics and state management
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 import uuid
+import httpx
+import random
 
 router = APIRouter()
+
+# Crop temperature requirements (optimal temp, min, max)
+CROP_TEMPS = {
+    "wheat": {"optimal": 18, "min": 5, "max": 30},
+    "corn": {"optimal": 25, "min": 15, "max": 35},
+    "rice": {"optimal": 28, "min": 20, "max": 38},
+    "potato": {"optimal": 15, "min": 5, "max": 25},
+    "tomato": {"optimal": 22, "min": 12, "max": 32},
+    "soybean": {"optimal": 24, "min": 15, "max": 35},
+}
 
 
 # ============ MODELS ============
@@ -106,6 +118,151 @@ ACTION_COSTS = {
 SEASONS = ["spring", "summer", "fall", "winter"]
 
 
+# ============ WEATHER HELPERS ============
+
+async def fetch_location_weather(latitude: float, longitude: float) -> Dict:
+    """Fetch real weather data from NASA POWER API based on location"""
+    try:
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=7)
+        
+        url = "https://power.larc.nasa.gov/api/temporal/daily/point"
+        params = {
+            "parameters": "T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,RH2M",
+            "community": "AG",
+            "longitude": longitude,
+            "latitude": latitude,
+            "start": start_date.strftime("%Y%m%d"),
+            "end": end_date.strftime("%Y%m%d"),
+            "format": "JSON"
+        }
+        
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            response = await client.get(url, params=params)
+            
+            if response.status_code == 200:
+                data = response.json()
+                props = data.get("properties", {}).get("parameter", {})
+                
+                # Get most recent day's data
+                temps = list(props.get("T2M", {}).values())
+                precip = list(props.get("PRECTOTCORR", {}).values())
+                humidity = list(props.get("RH2M", {}).values())
+                
+                # Filter out -999 (missing data)
+                temps = [t for t in temps if t > -900]
+                precip = [p for p in precip if p > -900]
+                humidity = [h for h in humidity if h > -900]
+                
+                avg_temp = round(sum(temps) / len(temps), 1) if temps else 22
+                avg_precip = round(sum(precip) / len(precip), 1) if precip else 5
+                avg_humidity = round(sum(humidity) / len(humidity), 1) if humidity else 60
+                
+                # Determine conditions based on data
+                if avg_precip > 10:
+                    conditions = "Rainy"
+                    icon = "🌧️"
+                elif avg_temp > 35:
+                    conditions = "Hot"
+                    icon = "🔥"
+                elif avg_temp < 5:
+                    conditions = "Cold"
+                    icon = "❄️"
+                elif avg_precip > 3:
+                    conditions = "Cloudy"
+                    icon = "☁️"
+                else:
+                    conditions = "Clear"
+                    icon = "☀️"
+                
+                return {
+                    "temperature": avg_temp,
+                    "precipitation": avg_precip,
+                    "humidity": avg_humidity,
+                    "conditions": conditions,
+                    "icon": icon,
+                    "source": "NASA POWER API"
+                }
+    except Exception as e:
+        print(f"Failed to fetch NASA weather: {e}")
+    
+    # Fallback to location-based estimates
+    return get_estimated_weather(latitude, longitude)
+
+
+def get_estimated_weather(latitude: float, longitude: float) -> Dict:
+    """Estimate weather based on latitude (climate zones)"""
+    abs_lat = abs(latitude)
+    
+    # Temperature varies by latitude (tropical to polar)
+    if abs_lat < 23.5:  # Tropical
+        base_temp = 28 + random.uniform(-3, 3)
+        precip = 8 + random.uniform(0, 10)
+        conditions = "Tropical"
+        icon = "🌴"
+    elif abs_lat < 35:  # Subtropical
+        base_temp = 24 + random.uniform(-4, 4)
+        precip = 5 + random.uniform(0, 8)
+        conditions = "Warm"
+        icon = "☀️"
+    elif abs_lat < 55:  # Temperate
+        base_temp = 15 + random.uniform(-6, 6)
+        precip = 4 + random.uniform(0, 6)
+        conditions = "Temperate"
+        icon = "🌤️"
+    else:  # Polar/Subarctic
+        base_temp = 2 + random.uniform(-10, 5)
+        precip = 2 + random.uniform(0, 3)
+        conditions = "Cold"
+        icon = "❄️"
+    
+    # Adjust for season (Northern vs Southern hemisphere)
+    month = datetime.now().month
+    is_winter = (latitude > 0 and month in [12, 1, 2]) or (latitude < 0 and month in [6, 7, 8])
+    if is_winter:
+        base_temp -= 10
+    
+    return {
+        "temperature": round(base_temp, 1),
+        "precipitation": round(precip, 1),
+        "humidity": round(60 + random.uniform(-20, 20), 1),
+        "conditions": conditions,
+        "icon": icon,
+        "source": "Estimated from location"
+    }
+
+
+def calculate_temperature_effect(crop_id: str, temperature: float) -> float:
+    """Calculate how temperature affects crop growth (0.0 to 1.5 multiplier)"""
+    crop_temp = CROP_TEMPS.get(crop_id, {"optimal": 22, "min": 10, "max": 35})
+    
+    optimal = crop_temp["optimal"]
+    min_temp = crop_temp["min"]
+    max_temp = crop_temp["max"]
+    
+    # Outside viable range - severe penalty
+    if temperature < min_temp or temperature > max_temp:
+        return 0.2  # 80% growth reduction
+    
+    # Calculate how close to optimal
+    if temperature <= optimal:
+        # Linearly scale from min to optimal
+        range_size = optimal - min_temp
+        distance = optimal - temperature
+        score = 1.0 - (distance / range_size) * 0.5  # 0.5 to 1.0
+    else:
+        # Linearly scale from optimal to max
+        range_size = max_temp - optimal
+        distance = temperature - optimal
+        score = 1.0 - (distance / range_size) * 0.5  # 0.5 to 1.0
+    
+    # Bonus for near-optimal temperature
+    if abs(temperature - optimal) <= 3:
+        score = min(1.5, score * 1.2)  # Up to 20% bonus
+    
+    return round(max(0.2, min(1.5, score)), 2)
+
+
 # ============ ROUTES ============
 
 @router.post("/new", response_model=GameState)
@@ -114,6 +271,9 @@ async def create_new_game(request: CreateGameRequest):
     
     game_id = str(uuid.uuid4())[:8]
     settings = DIFFICULTY_SETTINGS[request.difficulty]
+    
+    # Fetch real weather data for the selected location
+    weather_data = await fetch_location_weather(request.latitude, request.longitude)
     
     # Create farm plots
     plots = []
@@ -137,12 +297,7 @@ async def create_new_game(request: CreateGameRequest):
         total_revenue=0,
         total_expenses=0,
         plots=plots,
-        weather_today={
-            "temperature": 22,
-            "precipitation": 5,
-            "conditions": "Clear",
-            "icon": "☀️"
-        },
+        weather_today=weather_data,
         achievements=[],
         created_at=datetime.now().isoformat()
     )
@@ -280,19 +435,62 @@ async def advance_day(game_id: str):
     
     events = []
     
+    # Update weather based on location (with daily variation)
+    lat = game.location.get("latitude", 28.6)
+    lon = game.location.get("longitude", 77.2)
+    new_weather = get_estimated_weather(lat, lon)
+    
+    # Add some daily variation to temperature
+    temp_variation = random.uniform(-3, 3)
+    new_weather["temperature"] = round(new_weather["temperature"] + temp_variation, 1)
+    game.weather_today = new_weather
+    
+    current_temp = new_weather["temperature"]
+    current_precip = new_weather.get("precipitation", 5)
+    
+    # Weather events
+    if current_temp > 38:
+        events.append(f"🔥 HEATWAVE! Temperature: {current_temp}°C - Crops are stressed!")
+    elif current_temp < 2:
+        events.append(f"❄️ FROST WARNING! Temperature: {current_temp}°C - Crops may be damaged!")
+    elif current_precip > 15:
+        events.append(f"🌧️ HEAVY RAIN! Precipitation: {current_precip}mm - No need to water today!")
+    
     # Update each plot
     for plot in game.plots:
         if plot.status in [PlotStatus.PLANTED, PlotStatus.GROWING]:
-            # Decrease water level
-            plot.water_level = max(0, plot.water_level - 10)
+            # Decrease water level (less if raining)
+            water_loss = 10 if current_precip < 5 else 5 if current_precip < 10 else 0
+            plot.water_level = max(0, plot.water_level - water_loss)
+            
+            # Rain adds water
+            if current_precip > 5:
+                rain_water = min(30, current_precip * 2)
+                plot.water_level = min(100, plot.water_level + rain_water)
             
             # Health affected by water
             if plot.water_level < 20:
                 plot.health = max(0, plot.health - 5)
                 events.append(f"{plot.id}: Low water! Health declining.")
             
-            # Growth progress
+            # Health affected by extreme temperature
+            if current_temp > 38 or current_temp < 2:
+                damage = 10 * settings["weather_severity"]
+                plot.health = max(0, plot.health - damage)
+            
+            # Growth progress - base rate
             growth_rate = 5 * settings["growth_speed"]
+            
+            # TEMPERATURE EFFECT ON GROWTH
+            if plot.crop_id:
+                temp_modifier = calculate_temperature_effect(plot.crop_id, current_temp)
+                growth_rate *= temp_modifier
+                
+                # Notify player about temperature impact
+                if temp_modifier < 0.5:
+                    events.append(f"{plot.id}: {plot.crop_id} struggling at {current_temp}°C (sub-optimal temperature)")
+                elif temp_modifier > 1.2:
+                    events.append(f"{plot.id}: {plot.crop_id} thriving at {current_temp}°C! 🌱")
             
             # Fertilizer bonus
             if plot.fertilizer_level > 50:
@@ -308,7 +506,7 @@ async def advance_day(game_id: str):
             # Update status
             if plot.growth_progress >= 100:
                 plot.status = PlotStatus.READY
-                events.append(f"{plot.id}: Crop is ready to harvest!")
+                events.append(f"{plot.id}: 🌾 Crop is ready to harvest!")
             elif plot.growth_progress > 0:
                 plot.status = PlotStatus.GROWING
     
@@ -332,6 +530,7 @@ async def advance_day(game_id: str):
         "current_day": game.current_day,
         "season": game.season,
         "budget": game.budget,
+        "weather": game.weather_today,
         "events": events,
         "plots": game.plots
     }
