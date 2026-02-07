@@ -109,4 +109,40 @@ export const weatherApi = {
     }),
 }
 
+// Early Warning API
+export const earlyWarningApi = {
+  getForecast: (latitude, longitude, days = 14) =>
+    api.get('/early-warning/forecast', {
+      params: { latitude, longitude, days }
+    }),
+  getAlerts: (latitude, longitude, crops = null) =>
+    api.get('/early-warning/alerts', {
+      params: { latitude, longitude, ...(crops && { crops }) }
+    }),
+  getRiskAssessment: (crop, latitude, longitude) =>
+    api.get(`/early-warning/risk-assessment/${crop}`, {
+      params: { latitude, longitude }
+    }),
+}
+
+// ML Prediction API
+export const mlApi = {
+  getModelInfo: () => api.get('/ml/info'),
+  trainModel: (nSamples = 5000, useRealData = true) => 
+    api.post('/ml/train', null, { params: { n_samples: nSamples, use_real_data: useRealData } }),
+  predict: (data) => api.post('/ml/predict', data),
+  // NEW: Predict with automatic weather fetching from NASA POWER
+  predictAutoWeather: (data) => api.post('/ml/predict/auto-weather', data),
+  predictBatch: (predictions) => api.post('/ml/predict/batch', { predictions }),
+  getFeatureImportance: () => api.get('/ml/feature-importance'),
+  getCropSuitability: (crop, latitude, longitude, tempAvg, precipitation) =>
+    api.get(`/ml/crop-suitability/${crop}`, {
+      params: { latitude, longitude, temp_avg: tempAvg, precipitation }
+    }),
+  compareCrops: (latitude, longitude, tempAvg, precipitation) =>
+    api.get('/ml/compare-crops', {
+      params: { latitude, longitude, temp_avg: tempAvg, precipitation }
+    }),
+}
+
 export default api

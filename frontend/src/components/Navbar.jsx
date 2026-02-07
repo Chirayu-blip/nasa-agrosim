@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Sprout, Gamepad2, BookOpen, Home, Trophy, LogIn } from 'lucide-react'
+import { Sprout, Gamepad2, BookOpen, Home, Trophy, LogIn, AlertTriangle, Brain } from 'lucide-react'
 import clsx from 'clsx'
 import { useAuth } from '../context/AuthContext'
 import AuthModal from './Auth/AuthModal'
@@ -14,7 +14,8 @@ function Navbar() {
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/game', label: 'Play', icon: Gamepad2 },
-    { path: '/learn', label: 'Learn', icon: BookOpen },
+    { path: '/ml-prediction', label: 'AI Predict', icon: Brain },
+    { path: '/early-warning', label: 'Alerts', icon: AlertTriangle },
     { path: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   ]
 

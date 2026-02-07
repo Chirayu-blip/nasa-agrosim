@@ -5,6 +5,7 @@ pydantic>=2.5.3
 python-dotenv>=1.0.0
 numpy
 pandas
+pyarrow>=14.0.0
 scikit-learn
 joblib
 python-multipart

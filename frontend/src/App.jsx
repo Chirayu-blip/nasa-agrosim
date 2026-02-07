@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage'
 import GamePage from './pages/GamePage'
 import LearnPage from './pages/LearnPage'
 import LeaderboardPage from './pages/LeaderboardPage'
+import EarlyWarningPage from './pages/EarlyWarningPage'
+import MLPredictionPage from './pages/MLPredictionPage'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
               <Route path="/game/:gameId" element={<GamePage />} />
               <Route path="/learn" element={<LearnPage />} />
               <Route path="/leaderboard" element={<LeaderboardPage />} />
+              <Route path="/early-warning" element={<EarlyWarningPage />} />
+              <Route path="/ml-prediction" element={<MLPredictionPage />} />
             </Routes>
           </main>
         </div>

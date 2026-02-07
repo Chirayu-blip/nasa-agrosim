@@ -1,144 +1,42 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Realistic Farmer character with animations
+// Farmer character using custom GLB model
 export function Farmer({ position = [0, 0, 0], isWorking = false }) {
   const farmerRef = useRef();
-  const armRef = useRef();
-  const legsRef = useRef();
+  const { scene } = useGLTF('/models/farmer.glb');
+  
+  // Clone the scene to avoid sharing issues
+  const clonedScene = useMemo(() => {
+    const clone = scene.clone();
+    // Reset any baked-in position from the model
+    clone.position.set(0, 0, 0);
+    return clone;
+  }, [scene]);
   
   useFrame((state) => {
     if (farmerRef.current) {
-      // Idle breathing animation
-      farmerRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.01;
-    }
-    
-    if (isWorking && armRef.current) {
-      armRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 8) * 0.6 - 0.8;
-    }
-    
-    if (legsRef.current) {
-      // Subtle leg movement
-      legsRef.current.children[0].rotation.x = Math.sin(state.clock.elapsedTime * 4) * 0.1;
-      legsRef.current.children[1].rotation.x = -Math.sin(state.clock.elapsedTime * 4) * 0.1;
+      // Idle breathing animation - only animate Y offset, not absolute position
+      const baseY = position[1] || 0;
+      farmerRef.current.position.y = baseY + Math.sin(state.clock.elapsedTime * 2) * 0.02;
+      // Subtle rotation when working
+      if (isWorking) {
+        farmerRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 3) * 0.1;
+      }
     }
   });
 
   return (
     <group ref={farmerRef} position={position}>
-      {/* Body - shirt */}
-      <mesh position={[0, 0.42, 0]}>
-        <capsuleGeometry args={[0.1, 0.28, 8, 16]} />
-        <meshStandardMaterial color="#2563eb" roughness={0.8} />
-      </mesh>
-      
-      {/* Overalls */}
-      <mesh position={[0, 0.32, 0.02]}>
-        <boxGeometry args={[0.18, 0.1, 0.12]} />
-        <meshStandardMaterial color="#1e40af" roughness={0.9} />
-      </mesh>
-      
-      {/* Head */}
-      <mesh position={[0, 0.72, 0]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#fcd9b6" roughness={0.7} />
-      </mesh>
-      
-      {/* Eyes */}
-      <mesh position={[0.03, 0.74, 0.08]}>
-        <sphereGeometry args={[0.015, 8, 8]} />
-        <meshBasicMaterial color="#1e3a5f" />
-      </mesh>
-      <mesh position={[-0.03, 0.74, 0.08]}>
-        <sphereGeometry args={[0.015, 8, 8]} />
-        <meshBasicMaterial color="#1e3a5f" />
-      </mesh>
-      
-      {/* Smile */}
-      <mesh position={[0, 0.69, 0.09]} rotation={[0, 0, 0]}>
-        <torusGeometry args={[0.025, 0.006, 8, 16, Math.PI]} />
-        <meshBasicMaterial color="#c2410c" />
-      </mesh>
-      
-      {/* Straw hat */}
-      <group position={[0, 0.85, 0]}>
-        <mesh>
-          <cylinderGeometry args={[0.11, 0.11, 0.08, 16]} />
-          <meshStandardMaterial color="#d4a017" roughness={0.9} />
-        </mesh>
-        <mesh position={[0, -0.02, 0]}>
-          <cylinderGeometry args={[0.18, 0.18, 0.02, 16]} />
-          <meshStandardMaterial color="#c9a227" roughness={0.9} />
-        </mesh>
-        {/* Hat band */}
-        <mesh position={[0, -0.01, 0]}>
-          <cylinderGeometry args={[0.115, 0.115, 0.025, 16]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.8} />
-        </mesh>
-      </group>
-      
-      {/* Left Arm */}
-      <mesh position={[-0.16, 0.48, 0]} rotation={[0, 0, 0.4]}>
-        <capsuleGeometry args={[0.035, 0.18, 8, 16]} />
-        <meshStandardMaterial color="#2563eb" roughness={0.8} />
-      </mesh>
-      {/* Left hand */}
-      <mesh position={[-0.26, 0.38, 0]}>
-        <sphereGeometry args={[0.03, 8, 8]} />
-        <meshStandardMaterial color="#fcd9b6" roughness={0.7} />
-      </mesh>
-      
-      {/* Right Arm (animated) */}
-      <group ref={armRef} position={[0.16, 0.55, 0]}>
-        <mesh rotation={[0, 0, -0.4]}>
-          <capsuleGeometry args={[0.035, 0.18, 8, 16]} />
-          <meshStandardMaterial color="#2563eb" roughness={0.8} />
-        </mesh>
-        {/* Right hand */}
-        <mesh position={[0.08, -0.15, 0]}>
-          <sphereGeometry args={[0.03, 8, 8]} />
-          <meshStandardMaterial color="#fcd9b6" roughness={0.7} />
-        </mesh>
-        {/* Tool - hoe */}
-        {isWorking && (
-          <group position={[0.1, -0.2, 0]} rotation={[0.5, 0, 0.3]}>
-            <mesh position={[0, 0.15, 0]}>
-              <cylinderGeometry args={[0.012, 0.012, 0.4, 6]} />
-              <meshStandardMaterial color="#8b5a2b" roughness={0.9} />
-            </mesh>
-            <mesh position={[0, 0.35, 0.03]} rotation={[0.8, 0, 0]}>
-              <boxGeometry args={[0.08, 0.02, 0.06]} />
-              <meshStandardMaterial color="#6b7280" metalness={0.5} roughness={0.5} />
-            </mesh>
-          </group>
-        )}
-      </group>
-      
-      {/* Legs */}
-      <group ref={legsRef}>
-        <mesh position={[-0.05, 0.13, 0]}>
-          <capsuleGeometry args={[0.035, 0.22, 8, 16]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.9} />
-        </mesh>
-        <mesh position={[0.05, 0.13, 0]}>
-          <capsuleGeometry args={[0.035, 0.22, 8, 16]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.9} />
-        </mesh>
-      </group>
-      
-      {/* Boots */}
-      <mesh position={[-0.05, 0.025, 0.015]}>
-        <boxGeometry args={[0.055, 0.05, 0.09]} />
-        <meshStandardMaterial color="#422006" roughness={0.9} />
-      </mesh>
-      <mesh position={[0.05, 0.025, 0.015]}>
-        <boxGeometry args={[0.055, 0.05, 0.09]} />
-        <meshStandardMaterial color="#422006" roughness={0.9} />
-      </mesh>
+      <primitive object={clonedScene} scale={0.5} position={[0, 0, 0]} />
     </group>
   );
 }
+
+// Preload the model
+useGLTF.preload('/models/farmer.glb');
 
 // Animated chicken
 export function Chicken({ position = [0, 0, 0] }) {

@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.api import game, nasa_data, crops, weather, auth, leaderboard
+from app.api import game, nasa_data, crops, weather, auth, leaderboard, early_warning, ml_prediction
 from app.database import init_db
 
 
@@ -41,6 +41,8 @@ app.include_router(nasa_data.router, prefix="/api/nasa", tags=["NASA Data"])
 app.include_router(crops.router, prefix="/api/crops", tags=["Crops"])
 app.include_router(weather.router, prefix="/api/weather", tags=["Weather"])
 app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])
+app.include_router(early_warning.router, prefix="/api/early-warning", tags=["Early Warning"])
+app.include_router(ml_prediction.router, prefix="/api/ml", tags=["ML Prediction"])
 
 
 @app.get("/")
