@@ -1,196 +1,457 @@
-# 🌾 AgroSim - NASA Space Apps Challenge Agricultural Simulation
-
 <div align="center">
 
-![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)
-![Three.js](https://img.shields.io/badge/Three.js-3D-black?style=for-the-badge&logo=three.js)
-![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688?style=for-the-badge&logo=fastapi)
-![NASA](https://img.shields.io/badge/NASA-POWER_API-E03C31?style=for-the-badge&logo=nasa)
+# 🌾 AgroSim
 
-**An immersive 3D agricultural simulation game that leverages NASA satellite data to teach sustainable farming practices through interactive gameplay.**
+### *Where NASA Science Meets Sustainable Farming*
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-getting-started) • [How to Play](#-how-to-play)
+<br />
+
+[![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js-3D_Engine-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![NASA](https://img.shields.io/badge/NASA-POWER_API-E03C31?style=for-the-badge&logo=nasa&logoColor=white)](https://power.larc.nasa.gov/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+<br />
+
+**🚀 An immersive 3D agricultural simulation game powered by NASA satellite data, machine learning yield predictions, and an intelligent early warning system to teach sustainable farming practices.**
+
+<br />
+
+[🎮 Play Now](#-quick-start) • [✨ Features](#-key-features) • [🏗️ Architecture](#️-architecture) • [📡 API Docs](#-api-documentation) • [🤝 Contributing](#-contributing)
+
+<br />
+
+---
+
+<br />
+
+<img src="https://raw.githubusercontent.com/nasa/NASA-Brand-Guidelines/master/NASA_logo.svg" alt="NASA Logo" width="120"/>
+
+<br />
+
+### *Developed for the NASA Space Apps Challenge*
+
+<br />
 
 </div>
 
 ---
 
-## 🎮 About The Project
+## 🌟 Project Overview
 
-AgroSim is an educational farming simulation game developed for the **NASA Space Apps Challenge**. It combines real-world climate data from NASA's POWER API with engaging 3D gameplay to help users understand:
+**AgroSim** is a next-generation educational farming simulation that bridges the gap between space science and sustainable agriculture. By leveraging real-time climate data from NASA's POWER (Prediction Of Worldwide Energy Resources) API, players experience how actual weather patterns, temperature fluctuations, and environmental conditions affect crop growth across 20+ global locations.
 
-- How weather conditions affect crop growth
-- Sustainable agricultural practices
-- Climate-smart farming decisions
-- Resource management in agriculture
+### 🎯 Mission Statement
 
-Players manage a virtual farm using **real NASA satellite climate data** for their chosen location, making decisions about planting, irrigation, fertilization, and harvesting while responding to actual weather patterns.
+> *"Empowering the next generation of farmers with NASA science to build a sustainable, climate-resilient agricultural future."*
 
-## ✨ Features
+### 🔬 What Makes AgroSim Different?
 
-### 🌍 NASA Data Integration
-- **Real Climate Data**: Fetches actual temperature, precipitation, humidity, and solar radiation data from NASA POWER API
-- **Location-Based Weather**: 20+ global locations with accurate climate conditions
-- **Dynamic Weather Sync**: In-game weather reflects real atmospheric data
+| Traditional Farm Games | AgroSim |
+|------------------------|---------|
+| Static weather systems | **Real NASA satellite climate data** |
+| Arbitrary crop growth | **Science-based growth algorithms** |
+| No predictive insights | **ML-powered yield predictions** |
+| Reactive gameplay | **7-14 day early warning forecasts** |
+| Entertainment only | **Educational with real-world applications** |
 
-### 🎮 Immersive 3D Experience
-- **React Three Fiber**: Fully 3D farm environment with interactive elements
-- **6 Unique Crop Models**: Wheat, Corn, Rice, Soybean, Tomato, Potato - each with growth stages
-- **Animated Farm Objects**: Farmer, chickens, cows, tractor, windmill, barn, and more
-- **Dynamic Weather Effects**: Rain, storms, clouds, day/night cycle with realistic lighting
+---
 
-### 🌱 Farm Management
-- **Plant & Grow**: Select crops suitable for your climate
-- **Water & Fertilize**: Manage resources to optimize growth
-- **Harvest & Sell**: Collect crops when ready for maximum profit
-- **Weather Challenges**: Adapt to changing weather conditions
+## ✨ Key Features
 
-### 📊 Educational Insights
-- Real-time crop recommendations based on climate
-- Growth progress tracking
-- Weather impact visualization
-- Sustainable farming tips
+<table>
+<tr>
+<td width="50%">
 
-## 🏗️ Tech Stack
+### 🛰️ NASA Data Integration
+- **Real-Time Climate Data** from NASA POWER API
+- Temperature, precipitation, humidity, solar radiation
+- **20+ Global Locations** from Delhi to Dubai
+- Historical weather pattern analysis
+- Accurate atmospheric data synchronization
 
-### Frontend
-| Technology | Purpose |
-|------------|---------|
-| React 18 | UI Framework |
-| React Three Fiber | 3D Rendering |
-| Three.js | 3D Graphics Engine |
-| @react-three/drei | 3D Helpers & Controls |
-| Tailwind CSS | Styling |
-| React Query | Server State Management |
-| Vite | Build Tool |
+</td>
+<td width="50%">
 
-### Backend
-| Technology | Purpose |
-|------------|---------|
-| Python 3.10+ | Backend Language |
-| FastAPI | REST API Framework |
-| NASA POWER API | Climate Data Source |
-| Pydantic | Data Validation |
-| Uvicorn | ASGI Server |
+### 🎮 Immersive 3D Farm World
+- **React Three Fiber** powered 3D environment
+- **7 Unique Crops**: Wheat, Corn, Rice, Soybean, Potato, Tomato, Cotton
+- Animated farm life: Farmer, chickens, cows, tractor
+- Dynamic day/night cycle with realistic lighting
+- Interactive weather effects (rain, storms, clouds)
 
-## 🚀 Getting Started
+</td>
+</tr>
+<tr>
+<td width="50%">
 
-### Prerequisites
-- Node.js 18+
-- Python 3.10+
-- Git
+### 🤖 Machine Learning Predictions
+- **Ensemble ML Models** for yield prediction
+- Confidence intervals & risk assessment
+- Feature importance analysis
+- Actionable recommendations
+- Train on 5000+ data points from FAO statistics
 
-### Installation
+</td>
+<td width="50%">
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/YOUR_USERNAME/nasa-agrosim.git
-cd nasa-agrosim
+### ⚠️ Early Warning System
+- **7-14 Day Advance Forecasts**
+- Drought, frost, heatwave, flood detection
+- Severity classification (Low → Extreme)
+- Crop-specific impact assessment
+- Automated protective action recommendations
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🏆 Competitive Gameplay
+- **Global Leaderboard** system
+- User authentication & profiles
+- Score tracking & achievements
+- Multiple difficulty levels
+- Challenge friends worldwide
+
+</td>
+<td width="50%">
+
+### 📚 Educational Insights
+- Real-time crop recommendations
+- Climate-smart farming practices
+- Growth progress visualization
+- Sustainable agriculture tips
+- Scientific explanations for all mechanics
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         🌐 AGROSIM ARCHITECTURE                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   ┌──────────────────────────────────────────────────────────────┐  │
+│   │                    🎨 FRONTEND (React + Vite)                 │  │
+│   │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐ │  │
+│   │  │  3D World   │ │   Game UI   │ │    Dashboard & Charts   │ │  │
+│   │  │React Three  │ │  Tailwind   │ │      Chart.js           │ │  │
+│   │  │   Fiber     │ │    CSS      │ │   Framer Motion         │ │  │
+│   │  └─────────────┘ └─────────────┘ └─────────────────────────┘ │  │
+│   └──────────────────────────────────────────────────────────────┘  │
+│                                 │                                    │
+│                                 ▼                                    │
+│   ┌──────────────────────────────────────────────────────────────┐  │
+│   │                  ⚡ BACKEND (FastAPI + Python)                │  │
+│   │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────────┐  │  │
+│   │  │   Auth   │ │  Game    │ │  Weather │ │  ML Prediction  │  │  │
+│   │  │   API    │ │  Logic   │ │   Sync   │ │    Engine       │  │  │
+│   │  └──────────┘ └──────────┘ └──────────┘ └─────────────────┘  │  │
+│   │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────────┐  │  │
+│   │  │ Leaderbd │ │  Crops   │ │  Alerts  │ │  Early Warning  │  │  │
+│   │  │  System  │ │ Database │ │  Engine  │ │     System      │  │  │
+│   │  └──────────┘ └──────────┘ └──────────┘ └─────────────────┘  │  │
+│   └──────────────────────────────────────────────────────────────┘  │
+│                                 │                                    │
+│                                 ▼                                    │
+│   ┌──────────────────────────────────────────────────────────────┐  │
+│   │                    🛰️ EXTERNAL SERVICES                       │  │
+│   │        ┌─────────────────────────────────────────┐           │  │
+│   │        │         NASA POWER API                  │           │  │
+│   │        │   • Climate Data • Solar Radiation      │           │  │
+│   │        │   • Historical Weather • Forecasts      │           │  │
+│   │        └─────────────────────────────────────────┘           │  │
+│   └──────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-2. **Backend Setup**
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black) | 18.2 | UI Framework |
+| ![Three.js](https://img.shields.io/badge/-Three.js-000000?logo=three.js) | 0.159 | 3D Graphics Engine |
+| ![Vite](https://img.shields.io/badge/-Vite-646CFF?logo=vite&logoColor=white) | 5.0 | Build Tool |
+| ![TailwindCSS](https://img.shields.io/badge/-Tailwind-06B6D4?logo=tailwindcss&logoColor=white) | 3.4 | Styling |
+| ![Chart.js](https://img.shields.io/badge/-Chart.js-FF6384?logo=chartdotjs&logoColor=white) | 4.4 | Data Visualization |
+| ![Framer](https://img.shields.io/badge/-Framer_Motion-0055FF?logo=framer&logoColor=white) | 12.x | Animations |
+
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| ![Python](https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white) | 3.10+ | Core Language |
+| ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?logo=fastapi&logoColor=white) | 0.109 | REST API Framework |
+| ![SQLAlchemy](https://img.shields.io/badge/-SQLAlchemy-D71F00?logo=sqlalchemy&logoColor=white) | 2.0 | ORM & Database |
+| ![scikit-learn](https://img.shields.io/badge/-Scikit_Learn-F7931E?logo=scikitlearn&logoColor=white) | Latest | ML Models |
+| ![Pandas](https://img.shields.io/badge/-Pandas-150458?logo=pandas&logoColor=white) | Latest | Data Processing |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
 ```bash
+# Required
+Node.js 18+    ✓
+Python 3.10+   ✓
+Git            ✓
+```
+
+### ⚡ One-Command Setup (Windows)
+
+```powershell
+# Clone & Enter
+git clone https://github.com/YOUR_USERNAME/agrosim.git && cd agrosim
+
+# Quick Start
+./start.ps1
+```
+
+### 📦 Manual Installation
+
+<details>
+<summary><b>1️⃣ Backend Setup</b></summary>
+
+```bash
+# Navigate to backend
 cd backend
+
+# Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
+
+# Activate (Windows)
+venv\Scripts\activate
+# Activate (Linux/Mac)
+# source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Start server
 uvicorn app.main:app --reload --port 8000
 ```
 
-3. **Frontend Setup** (new terminal)
+✅ Backend running at: `http://localhost:8000`  
+📖 API Docs at: `http://localhost:8000/docs`
+
+</details>
+
+<details>
+<summary><b>2️⃣ Frontend Setup</b></summary>
+
 ```bash
+# Navigate to frontend
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-4. **Open in browser**
+✅ Frontend running at: `http://localhost:5173`
+
+</details>
+
+---
+
+## 🎮 How To Play
+
+<table>
+<tr>
+<td align="center" width="25%">
+<h3>1️⃣ Choose Location</h3>
+<p>Select from 20+ global locations or enter custom coordinates</p>
+</td>
+<td align="center" width="25%">
+<h3>2️⃣ Plant Crops</h3>
+<p>Choose crops suited to your climate conditions</p>
+</td>
+<td align="center" width="25%">
+<h3>3️⃣ Manage Farm</h3>
+<p>Water, fertilize, and protect crops from weather</p>
+</td>
+<td align="center" width="25%">
+<h3>4️⃣ Harvest & Profit</h3>
+<p>Harvest at optimal time for maximum yield</p>
+</td>
+</tr>
+</table>
+
+### 🌍 Available Locations
+
+| Region | Locations |
+|--------|-----------|
+| 🇮🇳 India | Delhi, Mumbai, Bangalore, Chennai, Kolkata, Punjab |
+| 🇺🇸 USA | New York, California, Texas |
+| 🇪🇺 Europe | London, Paris, Moscow |
+| 🌏 Asia-Pacific | Tokyo, Beijing, Sydney |
+| 🌍 Others | Cairo, Nairobi, São Paulo, Dubai |
+
+### 🌾 Supported Crops
+
+| Crop | Optimal Temp | Water Need | Growing Season |
+|------|--------------|------------|----------------|
+| 🌾 Wheat | 15-24°C | Medium | 100-130 days |
+| 🌽 Corn | 21-30°C | High | 90-120 days |
+| 🍚 Rice | 20-35°C | Very High | 120-150 days |
+| 🫘 Soybean | 20-30°C | Medium | 80-120 days |
+| 🥔 Potato | 15-20°C | Medium | 90-120 days |
+| 🍅 Tomato | 20-27°C | Medium | 60-90 days |
+| ☁️ Cotton | 21-30°C | Medium | 150-180 days |
+
+---
+
+## 📡 API Documentation
+
+### Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/nasa/climate` | Fetch NASA climate data |
+| `POST` | `/api/game/create` | Create new game session |
+| `GET` | `/api/crops/recommendations` | Get crop suggestions |
+| `POST` | `/api/ml/predict` | ML yield prediction |
+| `GET` | `/api/early-warning/forecast` | Get weather alerts |
+| `GET` | `/api/leaderboard` | Global rankings |
+
+### Example: Yield Prediction
+
+```bash
+curl -X POST "http://localhost:8000/api/ml/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "crop": "wheat",
+    "latitude": 28.6139,
+    "longitude": 77.2090,
+    "temp_avg": 25,
+    "precipitation": 80,
+    "humidity": 65
+  }'
 ```
-http://localhost:5173
-```
 
-## 🎯 How to Play
+📖 Full documentation: `http://localhost:8000/docs`
 
-1. **Create a New Game**: Enter your name, select difficulty, and choose a location
-2. **Plant Crops**: Click on empty plots to select and plant crops
-3. **Manage Resources**: Water and fertilize your crops regularly
-4. **Advance Time**: Click "Next Day" to progress and watch crops grow
-5. **Harvest**: Collect crops when they reach 100% growth
-6. **Profit**: Sell your harvest and expand your farm!
+---
 
-## 📡 NASA APIs Used
-
-- **[NASA POWER API](https://power.larc.nasa.gov/)**: Prediction Of Worldwide Energy Resources
-  - Daily temperature data
-  - Precipitation and humidity
-  - Solar radiation levels
-  - Wind speed data
-
-## 🎨 Game Features
-
-### 3D Farm View
-- Interactive 3D environment with OrbitControls
-- Day/Night cycle with dynamic lighting
-- Weather effects (rain, storms, clouds)
-
-### Crop Management
-- 6 unique 3D crop models with growth animations
-- Visual growth progress indicators
-- Harvest sparkle effects when ready
-
-### Weather Integration
-- Real-time weather sync with NASA data
-- Dynamic sky and lighting changes
-- Weather-appropriate visual effects
-
-## 🏆 NASA Space Apps Challenge
-
-This project was created for the NASA Space Apps Challenge, focusing on:
-- **Challenge Theme**: Leveraging Earth Observation Data for Agriculture
-- **Goal**: Make NASA climate data accessible and educational through gamification
-- **Impact**: Teaching sustainable farming practices to a global audience
-
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
-nasa-agrosim/
-├── backend/
-│   ├── app/
-│   │   ├── api/           # API routes (game, crops, nasa_data, weather)
-│   │   ├── main.py        # FastAPI application
-│   │   └── ...
+agrosim/
+├── 📁 backend/
+│   ├── 📁 app/
+│   │   ├── 📁 api/              # API route handlers
+│   │   │   ├── auth.py          # Authentication endpoints
+│   │   │   ├── crops.py         # Crop management
+│   │   │   ├── early_warning.py # Alert system (7-14 day forecasts)
+│   │   │   ├── game.py          # Game logic
+│   │   │   ├── leaderboard.py   # Rankings
+│   │   │   ├── ml_prediction.py # ML yield predictions
+│   │   │   ├── nasa_data.py     # NASA POWER API integration
+│   │   │   └── weather.py       # Weather sync
+│   │   ├── 📁 ml/               # Machine learning models
+│   │   │   ├── yield_predictor.py
+│   │   │   ├── feature_engineering.py
+│   │   │   └── real_data_fetcher.py
+│   │   ├── 📁 models/           # Database models
+│   │   ├── database.py          # SQLAlchemy setup
+│   │   └── main.py              # FastAPI application
 │   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── Farm3D/    # 3D farm components
-│   │   ├── pages/         # React pages
-│   │   └── services/      # API services
-│   └── package.json
+│
+├── 📁 frontend/
+│   ├── 📁 src/
+│   │   ├── 📁 components/
+│   │   │   ├── 📁 Farm3D/       # 3D world components
+│   │   │   │   ├── Farm3DWorld.jsx
+│   │   │   │   ├── CropModels.jsx
+│   │   │   │   ├── FarmObjects.jsx
+│   │   │   │   └── WeatherEffects.jsx
+│   │   │   ├── 📁 EarlyWarning/ # Alert components
+│   │   │   ├── 📁 Auth/         # Authentication UI
+│   │   │   └── 📁 Leaderboard/  # Rankings UI
+│   │   ├── 📁 pages/            # Route pages
+│   │   ├── 📁 services/         # API client
+│   │   └── 📁 context/          # React Context
+│   ├── package.json
+│   └── vite.config.js
+│
 └── README.md
 ```
 
+---
+
+## 🔮 Roadmap
+
+- [x] 🛰️ NASA POWER API Integration
+- [x] 🎮 3D Farm World with React Three Fiber
+- [x] 🌱 7 Crop Types with Growth Stages
+- [x] 🤖 ML Yield Prediction Engine
+- [x] ⚠️ Early Warning System (Drought/Frost/Heatwave)
+- [x] 🏆 Leaderboard & Authentication
+- [ ] 📱 Mobile Responsive Design
+- [ ] 🌐 Multiplayer Farming
+- [ ] 📊 Advanced Analytics Dashboard
+- [ ] 🔔 Push Notifications for Alerts
+- [ ] 🗺️ More Global Locations
+
+---
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions make the open-source community amazing! Any contributions are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
 
 ## 🙏 Acknowledgments
 
-- NASA for providing the POWER API
-- NASA Space Apps Challenge organizers
-- Three.js and React Three Fiber communities
+- [NASA POWER Project](https://power.larc.nasa.gov/) - Climate data API
+- [NASA Space Apps Challenge](https://www.spaceappschallenge.org/) - Inspiration
+- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/) - 3D rendering
+- [FAO Statistics](https://www.fao.org/faostat/) - Agricultural data for ML training
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for NASA Space Apps Challenge**
+### ⭐ Star this repo if you found it helpful!
 
-⭐ Star this repo if you found it helpful!
+<br />
+
+**Made with ❤️ for the NASA Space Apps Challenge**
+
+<br />
+
+[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/agrosim?style=social)](https://github.com/YOUR_USERNAME/agrosim)
+[![GitHub forks](https://img.shields.io/github/forks/YOUR_USERNAME/agrosim?style=social)](https://github.com/YOUR_USERNAME/agrosim)
+
+<br />
+
+🌍 *Building a sustainable future, one virtual farm at a time* 🌱
 
 </div>
